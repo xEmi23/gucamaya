@@ -14,7 +14,9 @@
 .capa {
   position: fixed;
   inset: 0;
-  z-index: 200;
+  /* Por encima del overlay de las tarjetas de exposición (z-index: 200),
+     así el vuelo se ve también cuando se abre una card. */
+  z-index: 260;
   overflow: hidden;
   pointer-events: none;
 }

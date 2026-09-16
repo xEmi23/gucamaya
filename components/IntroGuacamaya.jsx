@@ -1,10 +1,17 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import estilos from './IntroGuacamaya.module.css';
 
 /**
- * Animación de entrada: una guacamaya cruza la pantalla y desaparece.
+ * Animación recurrente: una guacamaya cruza la pantalla y desaparece.
+ *
+ * Se repite sola cada REPETIR_MS y, además, cualquier parte de la app puede
+ * pedir un vuelo extra disparando el evento GUACAMAYA_EVENTO en window (lo
+ * usa TeamMemberCard al abrir una tarjeta de exposición). Cada vuelo —sea
+ * automático o pedido— remonta la capa con una key distinta para que la
+ * animación CSS arranque siempre desde el primer fotograma, incluso si se
+ * pide uno nuevo mientras el anterior todavía está en pantalla.
  *
  * Por qué está hecho así:
  *
@@ -19,7 +26,7 @@ import estilos from './IntroGuacamaya.module.css';
  *
  * Sobre el movimiento reducido: por decisión expresa del equipo la intro se
  * reproduce siempre, también cuando el sistema pide menos movimiento. Se
- * asumió a sabiendas. Pesa a favor que dura tres segundos, no se repite, no
+ * asumió a sabiendas. Pesa a favor que cada vuelo dura tres segundos, no
  * bloquea la interacción y no arrastra el contenido de la página. Para
  * volver a respetarlo basta con descomentar la comprobación de abajo y
  * retirar el bloque equivalente de la hoja de estilos.
@@ -31,23 +38,45 @@ import estilos from './IntroGuacamaya.module.css';
 
 const VUELO = 3100; // duración del vuelo en milisegundos
 const COLCHON = 300; // margen antes de retirar el nodo
+const REPETIR_MS = 6000; // cada cuánto vuela sola
+
+export const GUACAMAYA_EVENTO = 'guacamaya:vuelo';
 
 export default function IntroGuacamaya() {
-  const [volando, setVolando] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [vueloId, setVueloId] = useState(0);
 
-  useEffect(() => {
+  const volar = useCallback(() => {
     // Para respetar la preferencia del sistema, descomentar esta línea:
     // if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-    setVolando(true);
-    const id = setTimeout(() => setVolando(false), VUELO + COLCHON);
-    return () => clearTimeout(id);
+    setVueloId((id) => id + 1);
+    setVisible(true);
   }, []);
 
-  if (!volando) return null;
+  // Vuelo inicial al cargar, y uno nuevo cada REPETIR_MS.
+  useEffect(() => {
+    volar();
+    const interval = setInterval(volar, REPETIR_MS);
+    return () => clearInterval(interval);
+  }, [volar]);
+
+  // Vuelo extra bajo pedido (p. ej. al abrir una tarjeta del equipo).
+  useEffect(() => {
+    window.addEventListener(GUACAMAYA_EVENTO, volar);
+    return () => window.removeEventListener(GUACAMAYA_EVENTO, volar);
+  }, [volar]);
+
+  useEffect(() => {
+    if (!visible) return undefined;
+    const id = setTimeout(() => setVisible(false), VUELO + COLCHON);
+    return () => clearTimeout(id);
+  }, [visible, vueloId]);
+
+  if (!visible) return null;
 
   return (
     <div
+      key={vueloId}
       className={estilos.capa}
       aria-hidden="true"
       style={{ '--vuelo': `${VUELO}ms` }}
