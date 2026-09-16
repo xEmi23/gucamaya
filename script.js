@@ -12,17 +12,49 @@
   if (document.readyState === 'complete') start();
   else window.addEventListener('load', start);
 
-  /* Línea inferior de la barra solo cuando la página ya se movió. */
+  /* Línea inferior de la barra y barra de progreso, en el mismo ciclo de scroll. */
   var topbar = document.getElementById('topbar');
+  var progress = document.getElementById('scrollProgress');
   var ticking = false;
+
+  function updateOnScroll() {
+    topbar.classList.toggle('stuck', window.scrollY > 8);
+    if (progress) {
+      var scrollable = document.documentElement.scrollHeight - window.innerHeight;
+      var pct = scrollable > 0 ? Math.min(window.scrollY / scrollable, 1) : 0;
+      progress.style.transform = 'scaleX(' + pct + ')';
+    }
+    ticking = false;
+  }
+
   window.addEventListener('scroll', function () {
     if (ticking) return;
     ticking = true;
-    requestAnimationFrame(function () {
-      topbar.classList.toggle('stuck', window.scrollY > 8);
-      ticking = false;
-    });
+    requestAnimationFrame(updateOnScroll);
   }, { passive: true });
+  updateOnScroll();
+
+  /* Revelado de secciones al entrar en pantalla. */
+  var revealTargets = document.querySelectorAll(
+    '.band-title, .band-sub, .prose, .member, .identity-inner, .foot-inner'
+  );
+
+  if ('IntersectionObserver' in window && revealTargets.length) {
+    revealTargets.forEach(function (el) { el.classList.add('reveal'); });
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+
+    revealTargets.forEach(function (el) { observer.observe(el); });
+  } else {
+    revealTargets.forEach(function (el) { el.classList.add('reveal', 'in-view'); });
+  }
 
   /* Menú en pantallas pequeñas. */
   var menuBtn = document.getElementById('menu-btn');
