@@ -1,0 +1,281 @@
+/* =========================================================
+   Intro: una guacamaya cruza la pantalla al entrar.
+
+   Todo se anima con transform y opacity, que el navegador resuelve en la
+   capa de composición sin recalcular diseño. No hay bucle de JavaScript.
+
+   El movimiento se reparte en tres capas encajadas para que ninguna regla
+   compita con otra por la propiedad transform:
+     .vuelo  -> avance horizontal y escala (profundidad)
+     .onda   -> ascenso ondulado e inclinación (alabeo)
+     .ala    -> aleteo
+   ========================================================= */
+
+.capa {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* ---------- 1. avance horizontal ----------
+   La escala sube y vuelve a bajar: la guacamaya llega de lejos, pasa cerca
+   del espectador y se aleja. Es lo que da la sensación de cámara. */
+.vuelo {
+  position: absolute;
+  top: 40vh;
+  left: 0;
+  width: clamp(180px, 20vw, 330px);
+  animation: cruzar var(--vuelo) cubic-bezier(0.34, 0.03, 0.42, 1) forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes cruzar {
+  0% {
+    transform: translate3d(-34vw, 0, 0) scale(0.5);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  52% {
+    transform: translate3d(46vw, 0, 0) scale(1);
+  }
+  86% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(128vw, 0, 0) scale(0.58);
+    opacity: 0;
+  }
+}
+
+/* ---------- 2. trayectoria vertical ----------
+   Sin esto el vuelo sería una línea recta. Las subidas y bajadas no son
+   simétricas a propósito: un ave real no ondula como una onda perfecta. */
+.onda {
+  animation: ondear var(--vuelo) cubic-bezier(0.4, 0, 0.5, 1) forwards;
+  will-change: transform;
+}
+
+@keyframes ondear {
+  0% {
+    transform: translateY(16vh) rotate(-12deg);
+  }
+  22% {
+    transform: translateY(-2vh) rotate(5deg);
+  }
+  41% {
+    transform: translateY(7vh) rotate(-4deg);
+  }
+  63% {
+    transform: translateY(-7vh) rotate(7deg);
+  }
+  82% {
+    transform: translateY(-2vh) rotate(-2deg);
+  }
+  100% {
+    transform: translateY(-22vh) rotate(9deg);
+  }
+}
+
+/* Misma trayectoria, amplitud reducida para pantallas de poco alto. */
+@keyframes ondearMovil {
+  0% {
+    transform: translateY(10vh) rotate(-10deg);
+  }
+  22% {
+    transform: translateY(-1vh) rotate(4deg);
+  }
+  41% {
+    transform: translateY(4vh) rotate(-3deg);
+  }
+  63% {
+    transform: translateY(-4vh) rotate(6deg);
+  }
+  82% {
+    transform: translateY(-1vh) rotate(-2deg);
+  }
+  100% {
+    transform: translateY(-14vh) rotate(8deg);
+  }
+}
+
+.ave {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* ---------- 3. aleteo ----------
+   El golpe hacia abajo es más rápido que la recuperación, igual que en el
+   vuelo real. De ahí que el punto medio esté en el 38% y no en el 50%. */
+.ala {
+  transform-box: view-box;
+  will-change: transform;
+}
+
+.alaFrente {
+  transform-origin: 150px 106px;
+  animation: aletearFrente 0.9s ease-in-out infinite;
+}
+
+.alaFondo {
+  transform-origin: 146px 116px;
+  animation: aletearFondo 0.9s ease-in-out infinite;
+}
+
+/* Amplitud corta y sentidos opuestos: las alas se abren y se cierran un
+   poco, sin llegar nunca a esconderse detrás del cuerpo. Un ave planeando
+   con las alas desplegadas se lee mejor que un aleteo amplio, que a media
+   batida deja al ave sin silueta. */
+@keyframes aletearFrente {
+  0% {
+    transform: rotate(-13deg);
+  }
+  45% {
+    transform: rotate(10deg);
+  }
+  100% {
+    transform: rotate(-13deg);
+  }
+}
+
+@keyframes aletearFondo {
+  0% {
+    transform: rotate(13deg);
+  }
+  45% {
+    transform: rotate(-10deg);
+  }
+  100% {
+    transform: rotate(13deg);
+  }
+}
+
+/* ---------- luz que viaja con el ave ---------- */
+.resplandor {
+  position: absolute;
+  inset: -45%;
+  background: radial-gradient(
+    circle,
+    rgba(192, 138, 34, 0.22),
+    rgba(179, 62, 30, 0.08) 42%,
+    transparent 64%
+  );
+  filter: blur(16px);
+  animation: latir var(--vuelo) ease-in-out forwards;
+}
+
+@keyframes latir {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  30%,
+  70% {
+    opacity: 1;
+  }
+}
+
+/* ---------- plumas que va soltando ---------- */
+.pluma {
+  position: absolute;
+  top: 48%;
+  left: 26%;
+  width: 11px;
+  height: 4px;
+  border-radius: 50% 12% 50% 12%;
+  opacity: 0;
+  will-change: transform, opacity;
+  animation: soltar 1.7s ease-out forwards;
+}
+
+.pluma1 {
+  background: var(--macaw, #b33e1e);
+  animation-delay: 0.55s;
+}
+.pluma2 {
+  background: var(--sky, #4f7cb0);
+  animation-delay: 0.95s;
+  left: 30%;
+  top: 56%;
+}
+.pluma3 {
+  background: var(--gold, #c08a22);
+  animation-delay: 1.4s;
+  left: 24%;
+  top: 42%;
+}
+.pluma4 {
+  background: var(--canopy, #3c6a32);
+  animation-delay: 1.85s;
+  left: 32%;
+  top: 52%;
+}
+
+@keyframes soltar {
+  0% {
+    transform: translate(0, 0) rotate(0deg) scale(0.95);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translate(-24vw, 15vh) rotate(210deg) scale(0.45);
+    opacity: 0;
+  }
+}
+
+/* ---------- pantallas pequeñas ----------
+   Menos recorrido vertical: en móvil el alto útil es corto y un ascenso
+   grande sacaría al ave de cuadro antes de tiempo. */
+@media (max-width: 680px) {
+  .vuelo {
+    top: 34vh;
+    width: clamp(120px, 38vw, 190px);
+  }
+
+  /* Se cambia el nombre de la animación en lugar de redefinir los mismos
+     keyframes dentro de la media query, que es ambiguo entre navegadores. */
+  .onda {
+    animation-name: ondearMovil;
+  }
+
+  .pluma {
+    width: 8px;
+    height: 3px;
+  }
+}
+
+/* ---------- movimiento reducido ----------
+   Por decisión expresa del equipo la intro se reproduce siempre.
+
+   Hace falta esta excepción porque globals.css recorta TODA animación a
+   .01ms cuando el sistema pide menos movimiento. Sin restaurar aquí las
+   duraciones, el vuelo terminaría en el primer fotograma y el ave quedaría
+   invisible, que es exactamente lo que pasaba antes.
+
+   Estos selectores son de clase y el global es el universal, así que entre
+   dos declaraciones !important gana este por especificidad.
+
+   Para volver a respetar la preferencia: borrar este bloque y descomentar
+   la comprobación en IntroGuacamaya.jsx. */
+@media (prefers-reduced-motion: reduce) {
+  .vuelo,
+  .onda,
+  .resplandor {
+    animation-duration: var(--vuelo) !important;
+  }
+
+  .ala {
+    animation-duration: 0.9s !important;
+  }
+
+  .pluma {
+    animation-duration: 1.7s !important;
+  }
+}

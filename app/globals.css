@@ -17,8 +17,9 @@
   --gold:       #C08A22;
   --sky:        #4F7CB0;
 
-  --serif: 'Source Serif 4', Georgia, serif;
-  --sans:  'Archivo', system-ui, -apple-system, sans-serif;
+  /* Las fuentes las inyecta next/font desde app/layout.jsx */
+  --serif: var(--font-serif), Georgia, serif;
+  --sans:  var(--font-sans), system-ui, -apple-system, sans-serif;
 
   --wrap: 1100px;
   --ease: cubic-bezier(.2,.7,.3,1);
@@ -146,7 +147,7 @@ a{ color: inherit; }
 .ambient-glow{ position:absolute; inset:0; z-index:0; overflow:hidden; pointer-events:none; }
 .glow{
   position:absolute; border-radius:50%;
-  filter: blur(70px); opacity:.32; will-change:transform;
+  filter: blur(70px); opacity:.32;
 }
 .glow-1{
   width:420px; height:420px; top:-130px; left:-90px;
@@ -323,6 +324,7 @@ a{ color: inherit; }
 
 .rule{
   display:block; width: 42px; height: 3px; margin-bottom: 1.1rem; border-radius:2px;
+  background: var(--accent, var(--canopy));
   transition: width .4s var(--ease);
 }
 .member:hover .rule{ width: 64px; }
