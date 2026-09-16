@@ -15,50 +15,53 @@ export const team = [
   {
     slug: 'cristian-uribe',
     name: 'Cristian Uribe',
-    role: 'Estrategia de datos',
+    role: 'Analista de Datos',
     accent: 'canopy',
     image: '/assets/moises.png',
     bio:
       'Se encarga de la pregunta anterior a todo: qué queremos saber y para ' +
-      'qué. Define el enfoque del análisis, decide qué información vale la ' +
-      'pena buscar y mantiene al equipo apuntando al mismo objetivo cuando ' +
-      'el proyecto empieza a ramificarse.',
+      'qué. Diseña el flujo de obtención de datos —combinando la API ' +
+      'meteorológica de Open-Meteo con la simulación del parque de ' +
+      'paneles— y mantiene al equipo apuntando al mismo objetivo cuando el ' +
+      'proyecto empieza a ramificarse.',
   },
   {
     slug: 'moises-obregon',
     name: 'Moisés Obregón',
-    role: 'Análisis de datos',
+    role: 'Analista de Datos',
     accent: 'gold',
     image: '/assets/emiliano.png',
     bio:
-      'Trabaja directamente con los datos: los limpia, los cruza y busca en ' +
-      'ellos patrones que no son evidentes a primera vista. Es quien ' +
-      'confirma si una idea del equipo realmente se sostiene con la ' +
-      'información disponible o si hay que replantearla.',
+      'Trabaja directamente con los datos: los limpia, corrige tipos y ' +
+      'nulos, y detecta anomalías como fallos de hardware o mantenimientos ' +
+      'que no son evidentes a primera vista. Es quien confirma si un ' +
+      'patrón realmente se sostiene con la información disponible o si hay ' +
+      'que replantearlo.',
   },
   {
     slug: 'emiliano-serna',
     name: 'Emiliano Serna',
-    role: 'Desarrollo full stack',
+    role: 'Analista de Datos',
     accent: 'macaw',
     image: '/assets/cristian.png',
     bio:
-      'Convierte el análisis en algo que se pueda usar. Construye las ' +
-      'interfaces y la lógica detrás de ellas, y se ocupa de que lo que ' +
-      'funciona en una prueba siga funcionando cuando lo abre alguien más, ' +
-      'en otro equipo y con otra conexión.',
+      'Convierte el análisis en algo que se pueda usar. Estructura la base ' +
+      'de datos en la nube en Appwrite, define el esquema de la telemetría ' +
+      'y se ocupa de que los datos lleguen completos y consultables para ' +
+      'todo el equipo.',
   },
   {
     slug: 'samuel-giraldo',
     name: 'Samuel Giraldo',
-    role: 'Soluciones de datos',
+    role: 'Analista de Datos',
     accent: 'sky',
     image: '/assets/samuel.png',
     bio:
-      'Conecta las piezas: fuentes de información, procesos automáticos y ' +
-      'la aplicación final. Se ocupa de que los datos lleguen completos y a ' +
-      'tiempo al lugar donde se necesitan, que suele ser la parte menos ' +
-      'visible y más frágil de cualquier proyecto.',
+      'Interpreta los resultados del análisis exploratorio: compara ' +
+      'ubicaciones, identifica paneles en estado crítico y traduce las ' +
+      'gráficas en recomendaciones operativas dentro del informe final, ' +
+      'que suele ser la parte menos visible y más decisiva de cualquier ' +
+      'proyecto.',
   },
 ];
 
@@ -71,5 +74,6 @@ export const siteInfo = {
   name: 'Guacamaya Analytics',
   slogan: 'Datos que vuelan alto',
   description:
-    'Equipo dedicado al análisis de información y al desarrollo de soluciones tecnológicas.',
+    'Equipo de analistas de datos dedicado al monitoreo, limpieza y análisis de información ' +
+    'para la toma de decisiones.',
 };

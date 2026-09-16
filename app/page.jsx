@@ -69,19 +69,22 @@ export default function HomePage() {
 
           <Reveal className="prose">
             <p className="lead">
-              Convertir datos en información útil para facilitar la toma de
-              decisiones, apoyándonos en el análisis, la tecnología y la
-              innovación.
+              Análisis de telemetría para monitoreo de energía renovable: un
+              reto de análisis de datos IoT sobre un parque simulado de 50
+              paneles solares distribuidos en diez municipios del Área
+              Metropolitana y el Oriente antioqueño.
             </p>
             <p>
-              En la práctica eso significa recoger información dispersa, ponerla
-              en orden, estudiarla con criterio y entregar una conclusión que
-              alguien pueda usar el mismo día en que la recibe. No buscamos el
-              informe más largo, sino el más claro.
+              Combinamos datos reales de una API meteorológica con la
+              simulación de la telemetría de cada panel, cargamos ese
+              histórico en una base de datos en la nube, lo limpiamos y
+              detectamos anomalías —fallos de hardware, mantenimientos, huecos
+              de sensor— y hacemos un análisis exploratorio para entender qué
+              ubicaciones rinden mejor y qué paneles necesitan revisión.
             </p>
             <p>
-              Es un reto técnico, pero también de comunicación: un análisis que
-              nadie entiende es un análisis que no sirve.
+              El cierre es un informe con hallazgos y recomendaciones
+              operativas: no buscamos el informe más largo, sino el más claro.
             </p>
           </Reveal>
         </div>
